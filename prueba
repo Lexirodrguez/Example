@@ -1,5 +1,0 @@
-
-const saludo = "Mundo";
-console.log(`Hola ${saludo}`);
-const decirHola = () => "Hola Mundo";
-console.log(decirHola());
