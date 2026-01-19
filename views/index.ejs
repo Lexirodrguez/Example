@@ -1,11 +1,177 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Comidas</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-utensils"></i> Sistema de Gestión de Comidas</h1>
+            <p class="subtitle">de gente muy pro</p>
+        </header>
+
+        <main>
+            <section class="api-info">
+                <h2><i class="fas fa-code"></i> Pide papu</h2>
+                <div class="endpoints-grid">
+                    <div class="endpoint-card get">
+                        <h3></h3>
+                        <p>Obtener todas las comidas</p>
+                        <button class="btn-test" onclick="testEndpoint('GET', '/api/comidas')">Probar</button>
+                    </div>
+                    <div class="endpoint-card get">
+                        <h3>GET /api/comidas/:id</h3>
+                        <p>Obtener comida por ID</p>
+                        <div class="input-group">
+                            <input type="number" id="getId" placeholder="ID de comida" min="1">
+                            <button class="btn-test" onclick="testEndpoint('GET', `/api/comidas/${document.getElementById('getId').value || '1'}`)">Probar</button>
+                        </div>
+                    </div>
+                    <div class="endpoint-card post">
+                        <h3></h3>
+                        <p>Crear nueva comida</p>
+                        <button class="btn-test" onclick="showCreateForm()">Crear Comida</button>
+                    </div>
+                    <div class="endpoint-card put">
+                        <h3>d</h3>
+                        <p>Actualizar comida existente</p>
+                        <div class="input-group">
+                            <input type="number" id="putId" placeholder="ID de comida" min="1">
+                            <button class="btn-test" onclick="showUpdateForm(document.getElementById('putId').value || '1')">Actualizar</button>
+                        </div>
+                    </div>
+                    <div class="endpoint-card delete">
+                        <h3></h3>
+                        <p>Eliminar comida</p>
+                        <div class="input-group">
+                            <input type="number" id="deleteId" placeholder="ID de comida" min="1">
+                            <button class="btn-test" onclick="testEndpoint('DELETE', `/api/comidas/${document.getElementById('deleteId').value || '1'}`)">Eliminar</button>
+                        </div>
+                    </div>
+                    <div class="endpoint-card get">
+                        <h3></h3>
+                        <p>Buscar comidas</p>
+                        <div class="input-group">
+                            <input type="text" id="searchQuery" placeholder="Término de búsqueda">
+                            <button class="btn-test" onclick="testEndpoint('GET', `/api/comidas/search?q=${document.getElementById('searchQuery').value || 'pizza'}`)">Buscar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="forms-section">
+                <div id="createForm" class="form-container" style="display: none;">
+                    <h3><i class="fas fa-plus-circle"></i> Crear Nueva Comida</h3>
+                    <form id="createComidaForm">
+                        <div class="form-group">
+                            <label for="nombre">Nombre *</label>
+                            <input type="text" id="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="descripcion">Descripción</label>
+                            <textarea id="descripcion" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoria">Categoría *</label>
+                            <input type="text" id="categoria" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="precio">Precio *</label>
+                            <input type="number" id="precio" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="calorias">Calorías</label>
+                            <input type="number" id="calorias" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="ingredientes">Ingredientes (separados por comas)</label>
+                            <input type="text" id="ingredientes" placeholder="Ej: masa, salsa, queso">
+                        </div>
+                        <div class="form-group checkbox">
+                            <label for="disponible">
+                                <input type="checkbox" id="disponible" checked> Disponible
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-submit">Crear Comida</button>
+                            <button type="button" class="btn-cancel" onclick="hideCreateForm()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="updateForm" class="form-container" style="display: none;">
+                    <h3><i class="fas fa-edit"></i> Actualizar Comida</h3>
+                    <form id="updateComidaForm">
+                        <div class="form-group">
+                            <label for="updateId">ID de la comida</label>
+                            <input type="number" id="updateId" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateNombre">Nombre *</label>
+                            <input type="text" id="updateNombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateDescripcion">Descripción</label>
+                            <textarea id="updateDescripcion" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateCategoria">Categoría *</label>
+                            <input type="text" id="updateCategoria" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="updatePrecio">Precio *</label>
+                            <input type="number" id="updatePrecio" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateCalorias">Calorías</label>
+                            <input type="number" id="updateCalorias" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="updateIngredientes">Ingredientes (separados por comas)</label>
+                            <input type="text" id="updateIngredientes">
+                        </div>
+                        <div class="form-group checkbox">
+                            <label for="updateDisponible">
+                                <input type="checkbox" id="updateDisponible"> Disponible
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-submit">Actualizar Comida</button>
+                            <button type="button" class="btn-cancel" onclick="hideUpdateForm()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="response-section">
+                <h2><i class="fas fa-server"></i> Respuesta de la API</h2>
+                <div class="response-container">
+                    <div class="response-header">
+                        <span id="responseStatus">Estado: Esperando solicitud...</span>
+                        <button class="btn-clear" onclick="clearResponse()">Limpiar</button>
+                    </div>
+                    <pre id="responseOutput"></pre>
+                </div>
+            </section>
+
+            <section class="comidas-list">
+                <h2><i class="fas fa-list"></i> Comidas Actuales en el Sistema</h2>
+                <div id="comidasContainer" class="comidas-grid">
+                    <!-- Las comidas se cargarán aquí -->
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Sistema hecho por personas que no saben nada de backend pero quieren aprender.</p>
+            <p class="footer-info">Este sistema es muy pro la verdad
+        </footer>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
 </html>
